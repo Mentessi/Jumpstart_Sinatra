@@ -121,7 +121,7 @@ get '/songs/:id' do
 end
 
 post '/songs' do 
-	create_song
+	flash[:notice] = "Song successfully added" if create_song
 	redirect to("/songs/#{@song.id}")
 end
 
@@ -141,12 +141,7 @@ delete '/songs/:id' do
 	redirect to('/songs')
 end
 
-#flash message -------
 
-post '/songs' do 
-	flash[:notice] = "Song successfully added" if create_song
-	redirect to("/songs/#{@song.id}")
-end
 
 
 

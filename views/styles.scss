@@ -54,3 +54,11 @@ label { display: block; }
 nav a.current {
   background: lighten($black, 5%);
 }
+
+.flash {
+  width: 600px;
+  padding: 5px;
+  font-weight: bold;
+  margin: 20px;
+  background: lighten($red, 60%);
+}

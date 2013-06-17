@@ -16,6 +16,3 @@ end
 DataMapper.finalize
 
 
-
-
-

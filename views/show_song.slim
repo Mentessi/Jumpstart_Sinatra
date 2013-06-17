@@ -1,5 +1,5 @@
 h1= @song.title
-p Release Date: #{@song.released_on.strftime("%e %B %Y")} if @song.released_on}
+p Release Date: #{@song.released_on.strftime("%e %B %Y") if @song.released_on}
 p Length: #{@song.length/60} minutes #{@song.length%60} seconds
 pre= @song.lyrics
 p <a href="/songs">back to song index</a>

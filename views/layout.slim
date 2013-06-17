@@ -1,0 +1,25 @@
+doctype html
+html lang="en"
+head
+title == @title || "Songs by Sinatra"
+
+meta charset="utf-8"
+
+link rel="stylesheet" type="text/css" href="/styles.css"
+head
+body
+	header
+		h1 Songs by Sinatra
+		nav
+			ul
+				li <a href="/" title="Home">Home</a>
+				li <a href="/about" title="About">About</a>
+				li <a href="/contact" title="Contact">Contact</a>
+				li <a href="/songs" title="Songs">Songs</a>
+
+	section
+		== yield
+
+
+
+

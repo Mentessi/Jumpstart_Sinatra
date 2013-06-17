@@ -18,13 +18,19 @@ configure :production do
 	DataMapper.setup(:default, ENV['DATABASE_URL'])
 end
 
-# get '/set/:name' do
-# 	session[:name] = params[:name]
-# end
+helpers do 
+	def css(*stylesheets)
+		stylesheets.map do |stylesheet|
+			"<link href=\"#{stylesheet}.css\" media=\"screen, projection\"rel=\"stylesheet\" />"
+		end.join
+	end
 
-# get '/get/hello' do 
-# 	"Hello #{session[:name]}"
-# end
+	def current?(path='/')
+		(request.path==path || request.path==path+'/') ? "current" :nil
+	end
+
+end
+
 
 get '/login' do 
 	slim :login

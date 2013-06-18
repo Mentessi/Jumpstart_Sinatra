@@ -1,5 +1,6 @@
 require 'data_mapper'
 
+
 class Song
 	include DataMapper::Resource
 	property :id, Serial

@@ -1,4 +1,5 @@
 require './song'
+require './sinatra/auth'
 require 'sinatra'
 require 'slim'
 require 'sass'
@@ -6,11 +7,7 @@ require 'sinatra/flash'
 require 'pony'
 require 'sinatra/reloader' if development?
 
-configure do 
-	enable :sessions
-	set :username, 'frank'
-	set :password, 'sinatra'
-end
+
 
 configure :development do
 	DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/development.db")
@@ -50,24 +47,6 @@ helpers do
 end
 
 
-get '/login' do 
-	slim :login
-end
-
-post '/login' do
-	if params[:username] == settings.username && params[:password] == settings.password
-		session[:admin] = true
-		redirect to('/songs')
-	else
-		slim :login
-	end
-end
-
-get '/logout' do
-	session.clear
-	redirect to('/login')
-end
-
 get '/styles.css' do
 	scss :styles 
 end
@@ -90,6 +69,8 @@ end
 not_found do 
 	slim :not_found
 end
+
+#Contact stuff----------
 
 post '/contact' do 
 	send_message
@@ -115,6 +96,7 @@ def send_message
 			:domain								=> 'localhost.localdomain'
 		})
 end
+
 
 #song methods -----------------------#
 
@@ -143,7 +125,7 @@ get '/songs' do
 end
 
 get '/songs/new' do 
-	halt(401,'Not Authorized') unless session[:admin]
+	protected!
 	@song = Song.new
 	slim :new_song
 end
@@ -158,7 +140,8 @@ post '/songs' do
 	redirect to("/songs/#{@song.id}")
 end
 
-get '/songs/:id/edit' do 
+get '/songs/:id/edit' do
+	protected! 
 	@song = find_song
 	slim :edit_song
 end
@@ -172,12 +155,16 @@ put '/songs/:id' do
 	redirect to("/songs/#{song.id}")
 end
 
-delete '/songs/:id' do 
+delete '/songs/:id' do
+	protected! 
 	if find_song.destroy
 		flash[:notice] = "Song deleted"
 	end
 	redirect to('/songs')
 end
+
+
+
 
 
 

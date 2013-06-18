@@ -62,3 +62,14 @@ nav a.current {
   margin: 20px;
   background: lighten($red, 60%);
 }
+
+#like { p{
+    font-weight: bold;
+    color: $red;
+  }
+  input {
+    background: $red url(/img/like.png) 0 2px no-repeat;
+    border: darken($red, 10%) 1px solid;
+    height: 28px;
+    padding-left: 24px;
+} }

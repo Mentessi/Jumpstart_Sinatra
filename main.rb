@@ -170,6 +170,13 @@ delete '/songs/:id' do
 end
 
 
+post '/songs/:id/like' do 
+	@song = find_song
+	@song.likes = @song.likes.next
+	@song.save
+	redirect to"/songs/#{@song.id}" unless request.xhr?
+	slim :like, :layout => false
+end
 
 
 

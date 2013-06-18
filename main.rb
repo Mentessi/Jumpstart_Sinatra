@@ -3,6 +3,7 @@ require 'sinatra'
 require 'slim'
 require 'sass'
 require 'sinatra/flash'
+require 'pony'
 require 'sinatra/reloader' if development?
 
 configure do 
@@ -13,10 +14,18 @@ end
 
 configure :development do
 	DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/development.db")
+	set :email_address => 'smtp.gmail.com',
+      :email_user_name => 'Mentessi',
+      :email_password => 'secret',
+      :email_domain => 'localhost.localdomain'
 end
 
 configure :production do 
 	DataMapper.setup(:default, ENV['DATABASE_URL'])
+	set :email_address => 'smtp.sendgrid.net',
+	:email_user_name => ENV['SENDGRID_USERNAME'],
+	:email_password => ENV['SENDGRID_PASSWORD'],
+	:email_domain => 'heroku.com'
 end
 
 before do
@@ -82,6 +91,30 @@ not_found do
 	slim :not_found
 end
 
+post '/contact' do 
+	send_message
+	flash[:notice] = "Thank you for your message. We'll be in touch soon."
+	redirect to('/')
+end
+
+def send_message
+	Pony.mail(
+		:from 				=> params[:name] + "<" + params[:email] + ">",
+		:to 					=> 'mentessi@gmail.com',
+		:subject			=> params[:name] + " has contacted you",
+		:body					=> params[:message] + params[:email],
+		:port 				=> '587',
+		:via 					=> :smtp,
+		:via_options 	=> {
+			:address							=> 'smtp.gmail.com',
+			:port									=> '587',
+			:enable_starttls_auto	=> true,
+			:user_name						=> 'mentessi',
+			:password							=> 'secret',
+			:authentication				=> :plain,
+			:domain								=> 'localhost.localdomain'
+		})
+end
 
 #song methods -----------------------#
 
@@ -131,13 +164,18 @@ get '/songs/:id/edit' do
 end
 
 put '/songs/:id' do
+	protected!
 	song = find_song
-	song.update(params[:song])
+	if song.update(params[:song])
+		flash[:notice] = "Song sucessfully updated!"
+	end
 	redirect to("/songs/#{song.id}")
 end
 
 delete '/songs/:id' do 
-	find_song.destroy
+	if find_song.destroy
+		flash[:notice] = "Song deleted"
+	end
 	redirect to('/songs')
 end
 

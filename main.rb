@@ -5,6 +5,8 @@ require 'slim'
 require 'sass'
 require 'sinatra/flash'
 require 'pony'
+require 'v8'
+require 'coffee-script'
 require 'sinatra/reloader' if development?
 
 
@@ -49,6 +51,10 @@ end
 
 get '/styles.css' do
 	scss :styles 
+end
+
+get('/javascripts/application.js') do
+	coffee :application
 end
 
 get '/' do 
